@@ -9,7 +9,7 @@ SYSTEM_PROMPT = (
     "\n"
     "SCOPE (AI ONLY):\n"
     "1. AI Automation: Tools using LLMs/Agents (ZeroStep, AI self-healing). IGNORING standard Cypress/Selenium updates.\n"
-    "2. Dev Tools: Major AI changes in Cursor, Copilot, Claude, Local LLMs.\n"
+    "2. Dev Tools & Models: Major updates in coding assistants (Cursor, Copilot) and Tier-1 LLMs (OpenAI, Claude, Gemini, DeepSeek, Mistral, Llama, Qwen, Local LLMs, etc.) specifically impacting code generation or testing.\n"
     "3. Strategy: AI regulations, deepfake risks, security shifts.\n"
     "4. Education: High-value engineering tutorials/guides on AI in QA (no marketing fluff).\n"
     "\n"
