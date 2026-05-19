@@ -4,41 +4,59 @@ from loguru import logger
 from .config import config
 
 PROMPT_REGULAR = (
-    "Role: Senior AI Tech Lead. Task: Generate a WEEKLY DIGEST (4-5 items) from the LAST 7 DAYS for QA/SDETs.\n"
-    "Target Audience: SDETs, QA Engineers, Developers.\n"
+    "Role: Senior AI Tech Lead. Task: Generate a WEEKLY DIGEST (4-5 items) from the LAST 7 DAYS for QA and AQA Engineers.\n"
+    "Target Audience: AQAs, QA Engineers, Developers.\n"
     "\n"
     "SCOPE (AI ONLY):\n"
     "1. AI Automation: Tools using LLMs/Agents (ZeroStep, AI self-healing). IGNORING standard Cypress/Selenium updates.\n"
     "2. Dev Tools & Models: Major updates in coding assistants (Cursor, Copilot) and Tier-1 LLMs (OpenAI, Claude, Gemini, DeepSeek, Mistral, Llama, Qwen, Local LLMs, etc.) specifically impacting code generation or testing.\n"
-    "3. Strategy: Global outages/downtimes of major AI providers, AI tool data leaks or source code breaches, changes in API pricing/billing models (e.g., usage-based limits), and major vendor policy shifts.\n"
+    "3. Strategy: Global outages/downtimes of major AI providers, AI tool data leaks or source code breaches, changes in API pricing/billing models (e.g., usage-based limits), and major AI vendor product/policy announcements. "
+    "EXCLUDE: legislation, court cases, government regulation, political decisions — even if AI-related.\n"
     "\n"
     "OUTPUT RULES:\n"
     "1. LINKS: Use inline Markdown [Source](URL) ONLY. NO footnotes like [1]. If a deep link fails, use the root URL.\n"
     "2. FORMAT & TEMPLATES (Follow Strictly):\n"
-    "   - For News/Updates:  * **Title** (Date: DD.MM): Summary... [Source Name](URL)\n"
+    "   - For News/Updates:  * **Title** (Date: DD.MM): 1-2 sentence summary, max 40 words. [Source Name](URL)\n"
     "3. QUANTITY: 4-5 items total.\n"
     "4. TIMEFRAME: Strict 7-day lookback for News.\n"
-    "5. LANGUAGE: Russian."
+    "5. LANGUAGE: Russian.\n"
+    "6. NO closing remarks, questions, or suggestions after the list."
+    "7. NO meta-commentary and NO introductory paragraph: start directly with the first bullet. "
+    "Do not explain who the digest is for, why it matters for QA/AQA, "
+    "or use phrases like 'важно для QA', 'для команды тестирования', 'это сигнал для AQA'. "
+    "State facts only.\n"
+    "8. SOURCES: Prefer official vendor blogs, changelogs, and status pages "
+    "(e.g. openai.com/blog, anthropic.com/news, github.blog, cursor.com/changelog). "
+    "Avoid aggregator sites as the sole source.\n"
 )
 
 PROMPT_WITH_GUIDES = (
-    "Role: Senior AI Tech Lead. Task: Generate a WEEKLY DIGEST (4-5 items) from the LAST 7 DAYS for QA/SDETs.\n"
-    "Target Audience: SDETs, QA Engineers, Developers.\n"
+    "Role: Senior AI Tech Lead. Task: Generate a WEEKLY DIGEST (4-5 items) from the LAST 7 DAYS for QA and AQA Engineers .\n"
+    "Target Audience: AQAs, QA Engineers, Developers.\n"
     "\n"
     "SCOPE (AI ONLY):\n"
     "1. AI Automation: Tools using LLMs/Agents (ZeroStep, AI self-healing). IGNORING standard Cypress/Selenium updates.\n"
     "2. Dev Tools & Models: Major updates in coding assistants (Cursor, Copilot) and Tier-1 LLMs (OpenAI, Claude, Gemini, DeepSeek, Mistral, Llama, Qwen, Local LLMs, etc.) specifically impacting code generation or testing.\n"
-    "3. Strategy: Global outages/downtimes of major AI providers, AI tool data leaks or source code breaches, changes in API pricing/billing models (e.g., usage-based limits), and major vendor policy shifts.\n"
+    "3. Strategy: Global outages/downtimes of major AI providers, AI tool data leaks or source code breaches, changes in API pricing/billing models (e.g., usage-based limits), and major AI vendor product/policy announcements. "
+    "EXCLUDE: legislation, court cases, government regulation, political decisions — even if AI-related.\n"
     "4. Education: High-value engineering tutorials/guides on AI in QA (no marketing fluff).\n"
     "\n"
     "OUTPUT RULES:\n"
     "1. LINKS: Use inline Markdown [Source](URL) ONLY. NO footnotes like [1]. If a deep link fails, use the root URL.\n"
     "2. FORMAT & TEMPLATES (Follow Strictly):\n"
-    "   - For News:  * **Title** (Date: DD.MM): Summary... [Source Name](URL)\n"
-    "   - For Guides: * **Title** (Type: Guide): Summary... [Source Name](URL)\n"
+    "   - For News:  * **Title** (Date: DD.MM): 1-2 sentence summary, max 40 words. [Source Name](URL)\n"
+    "   - For Guides: * **Title** (Type: Guide): 1-2 sentence summary, max 40 words. [Source Name](URL)\n"
     "3. QUANTITY: 4-5 items total. Prioritize News, fill gap with 1-2 Guides.\n"
     "4. TIMEFRAME: Strict 7-day lookback for News. Guides can be older if timeless and high-value.\n"
-    "5. LANGUAGE: Russian."
+    "5. LANGUAGE: Russian.\n"
+    "6. NO closing remarks, questions, or suggestions after the list."
+    "7. NO meta-commentary and NO introductory paragraph: start directly with the first bullet. "
+    "Do not explain who the digest is for, why it matters for QA/AQA, "
+    "or use phrases like 'важно для QA', 'для команды тестирования', 'это сигнал для AQA'. "
+    "State facts only.\n"
+    "8. SOURCES: Prefer official vendor blogs, changelogs, and status pages "
+    "(e.g. openai.com/blog, anthropic.com/news, github.blog, cursor.com/changelog). "
+    "Avoid aggregator sites as the sole source.\n"
 )
 
 
@@ -51,11 +69,11 @@ async def fetch_ai_news() -> str:
     if is_first_monday:
         logger.info("First Monday of the month: Looking for news and guides.")
         system_prompt = PROMPT_WITH_GUIDES
-        user_prompt =f"Generate a Weekly AI Digest for QA/SDET for the week ending {current_date_str}. MUST include 1 educational guide."
+        user_prompt =f"Generate a Weekly AI Digest for QA and AQA Engineers for the week ending {current_date_str}. MUST include 1 educational guide."
     else:
         logger.info("Typical Monday: Looking only for news.")
         system_prompt = PROMPT_REGULAR
-        user_prompt = f"Generate a Weekly AI Digest for QA/SDET for the week ending {current_date_str}."
+        user_prompt = f"Generate a Weekly AI Digest for QA and AQA Engineers for the week ending {current_date_str}."
 
     headers = {
         "Authorization": f"Bearer {config.openrouter_api_key.get_secret_value()}",
